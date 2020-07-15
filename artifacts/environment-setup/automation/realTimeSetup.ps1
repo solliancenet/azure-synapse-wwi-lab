@@ -44,7 +44,7 @@ az functionapp deployment source config-zip `
 az functionapp deployment source config-zip `
         --resource-group $resourceGroup `
         --name $locationFunction `
-        --src "functions/powershell-functions/LocationAnalytics_Publish_Package.zip"
+        --src "../functions/powershell-functions/LocationAnalytics_Publish_Package.zip"
 
 # $principal=az resource show --ids /subscriptions/$subscriptionId.id/resourceGroups/$resourceGroup/providers/Microsoft.StreamAnalytics/StreamingJobs/$asaName |ConvertFrom-Json
 $principal=az resource show -g test-realtime-rana -n TweetsASA --resource-type "Microsoft.StreamAnalytics/streamingjobs"|ConvertFrom-Json
