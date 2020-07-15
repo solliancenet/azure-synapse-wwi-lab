@@ -32,9 +32,9 @@ $streamingDatasetUrl= Read-Host "Please enter streaming dataset url for Location
 	
 az group deployment create --resource-group $resourceGroup --template-file ./TwitterARM.json >> output.txt #deploys azure function at specified resource-group	
 $output_json = Get-Content "output.txt" | Out-String | ConvertFrom-Json
-$twitterFunction=$output_json.properties.outputs.twitter_azure_function_functions_app_name
-$locationFunction=$output_json.properties.outputs.location_azure_function_functions_app_name
-$asaName=$output_json.properties.outputs.asaName
+$twitterFunction=$output_json.properties.outputs.twitter_azure_function_functions_app_name.value
+$locationFunction=$output_json.properties.outputs.location_azure_function_functions_app_name.value
+$asaName=$output_json.properties.outputs.asaName.value
 
 az functionapp deployment source config-zip `
         --resource-group $resourceGroup `
@@ -47,7 +47,7 @@ az functionapp deployment source config-zip `
         --src "../functions/powershell-functions/LocationAnalytics_Publish_Package.zip"
 
 # $principal=az resource show --ids /subscriptions/$subscriptionId.id/resourceGroups/$resourceGroup/providers/Microsoft.StreamAnalytics/StreamingJobs/$asaName |ConvertFrom-Json
-$principal=az resource show -g test-realtime-rana -n TweetsASA --resource-type "Microsoft.StreamAnalytics/streamingjobs"|ConvertFrom-Json
+$principal=az resource show -g $resourceGroup -n $asaName --resource-type "Microsoft.StreamAnalytics/streamingjobs"|ConvertFrom-Json
 $principalId=$principal.identity.principalId
 Add-PowerBIWorkspaceUser -WorkspaceId $wsId -PrincipalId $principalId -PrincipalType App -AccessRight Contributor
 

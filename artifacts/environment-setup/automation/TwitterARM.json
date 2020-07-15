@@ -102,9 +102,10 @@
       }
    },
    "variables":{
+   
       "eventHubNameSpace":"[concat(parameters('eventHubNameSpace'),parameters('unique_code'))]",
+	  "managedAccessPolicyName":"ManageAccessPolicy",
       "authRuleResourceId":"[resourceId('Microsoft.EventHub/namespaces/authorizationRules', variables('eventHubNameSpace'), variables('managedAccessPolicyName'))]",
-      "managedAccessPolicyName":"ManageAccessPolicy",
       "location_azure_function_ase_name":"[concat(parameters('location_azure_function_ase_name'),parameters('unique_code'))]",
       "location_azure_function_storage_name":"[concat(parameters('location_azure_function_storage_name'),parameters('unique_code'))]",
       "location_azure_function_ai_name":"[concat(parameters('location_azure_function_ai_name'),parameters('unique_code'))]",
@@ -137,13 +138,13 @@
          "apiVersion":"2019-06-01",
          "name":"[parameters('asaName')]",
          "location":"Central US",
+		 "identity": {
+				"type": "SystemAssigned"
+			},
          "properties":{
             "sku":{
                "name":"Standard"
-            },
-			"identity": {
-				"type": "SystemAssigned",
-			}
+            },	
             "eventsOutOfOrderPolicy":"Adjust",
             "outputErrorPolicy":"Stop",
             "eventsOutOfOrderMaxDelayInSeconds":0,
@@ -221,7 +222,7 @@
          "name":"[concat(parameters('asaName'), '/',parameters('eventHubName'))]",
          "dependsOn":[
             "[resourceId('Microsoft.StreamAnalytics/streamingjobs', parameters('asaName'))]",
-			"[resourceId('Microsoft.EventHub/namespaces/AuthorizationRules', concat(variables('eventHubNameSpace'), '/',variables('managedAccessPolicyName')))]"
+			"[resourceId('Microsoft.EventHub/namespaces/AuthorizationRules', variables('eventHubNameSpace'),variables('managedAccessPolicyName'))]"
 			
          ],
          "properties":{
