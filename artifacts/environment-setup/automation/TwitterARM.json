@@ -113,7 +113,8 @@
       "twitter_azure_function_ase_name":"[concat(parameters('twitter_azure_function_ase_name'),parameters('unique_code'))]",
       "twitter_azure_function_storage_name":"[concat(parameters('twitter_azure_function_storage_name'),parameters('unique_code'))]",
       "twitter_azure_function_ai_name":"[concat(parameters('twitter_azure_function_ai_name'),parameters('unique_code'))]",
-      "twitter_azure_function_functions_app_name":"[concat(parameters('twitter_azure_function_functions_app_name'),parameters('unique_code'))]"
+      "twitter_azure_function_functions_app_name":"[concat(parameters('twitter_azure_function_functions_app_name'),parameters('unique_code'))]",
+	  "asaQuery":"SELECT System.Timestamp as Time,topic as Hashtag,Text as Tweet,City,UserName,RetweetCount,FavouriteCount,Sentiment,SentimentScore,IsRetweet,HourOfDay,Language INTO [tweetsout] FROM [tweetsin]"
    },
    "resources":[
       {
@@ -264,6 +265,18 @@
             }
          }
       },
+	  {
+      "type": "Microsoft.StreamAnalytics/streamingjobs/transformations",
+      "apiVersion": "2016-03-01",
+      "name": "[concat(parameters('asaName'), '/query')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.StreamAnalytics/streamingjobs', parameters('asaName'))]"
+      ],
+      "properties": {
+        "streamingUnits": 6,
+        "query": "[variables('asaQuery')]"
+      }
+    },
       {
          "type":"Microsoft.EventHub/namespaces/eventhubs/consumergroups",
          "apiVersion":"2017-04-01",
